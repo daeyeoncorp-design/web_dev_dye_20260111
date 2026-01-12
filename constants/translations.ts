@@ -157,6 +157,36 @@ export const TRANSLATIONS = {
             },
             designed_by: "Designed by DAEYEON",
             rights: "All rights reserved.",
+            modals: {
+                close: "Close",
+                careers: {
+                    title: "Careers at DAEYEON",
+                    p1: "We are always looking for talented individuals to join our team.",
+                    p2: "Currently, there are no specific open positions listed online, but we welcome spontaneous applications.",
+                    contact_title: "Contact HR",
+                    contact_desc: "Please send your resume and cover letter to:",
+                },
+                privacy: {
+                    title: "Privacy Policy",
+                    last_updated: "Last Updated",
+                    s1_title: "1. Introduction",
+                    s1_desc: "DAEYEON ENG respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website.",
+                    s2_title: "2. Data We Collect",
+                    s2_desc: "We may collect, use, store and transfer different kinds of personal data about you such as Identity Data (name) and Contact Data (email, phone number) when you fill out our contact forms.",
+                    s3_title: "3. How We Use Your Data",
+                    s3_desc: "We will only use your personal data when the law allows us to. Most commonly, we will use your personal data to respond to your inquiries and manage our relationship with you.",
+                },
+                terms: {
+                    title: "Terms of Service",
+                    last_updated: "Last Updated",
+                    s1_title: "1. Agreement to Terms",
+                    s1_desc: "By accessing our website, you agree to be bound by these Terms of Service and to comply with all applicable laws and regulations.",
+                    s2_title: "2. Intellectual Property",
+                    s2_desc: "The content, organization, graphics, design, compilation, and other matters related to the Site are protected under applicable copyrights, trademarks and other proprietary rights.",
+                    s3_title: "3. Disclaimer",
+                    s3_desc: "The materials on DAEYEON ENG's website are provided on an 'as is' basis. DAEYEON ENG makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability.",
+                }
+            },
         },
         cta: {
             title: "Let's Build Together.",
@@ -353,6 +383,36 @@ export const TRANSLATIONS = {
             },
             designed_by: "Designed by DAEYEON",
             rights: "All rights reserved.",
+            modals: {
+                close: "닫기",
+                careers: {
+                    title: "대연이엔지 인재채용",
+                    p1: "우리는 항상 우리 팀에 합류할 재능 있는 인재를 찾고 있습니다.",
+                    p2: "현재 온라인에 게시된 채용 공고는 없으나, 수시 지원은 언제나 환영합니다.",
+                    contact_title: "채용 문의",
+                    contact_desc: "이력서와 자기소개서를 아래 이메일로 보내주세요:",
+                },
+                privacy: {
+                    title: "개인정보처리방침",
+                    last_updated: "최종 수정일",
+                    s1_title: "1. 개요",
+                    s1_desc: "대연이엔지는 귀하의 개인정보를 존중하며 보호하기 위해 최선을 다합니다. 본 방침은 귀하가 당사 웹사이트를 방문할 때 당사가 개인정보를 어떻게 처리하는지 안내합니다.",
+                    s2_title: "2. 수집하는 데이터",
+                    s2_desc: "문의 양식을 작성할 때 신원 정보(이름) 및 연락처 정보(이메일, 전화번호)와 같은 개인정보를 수집, 사용, 저장 및 전송할 수 있습니다.",
+                    s3_title: "3. 데이터 사용 방법",
+                    s3_desc: "당사는 법이 허용하는 경우에만 귀하의 개인정보를 사용합니다. 가장 일반적으로는 문의에 응답하고 관계를 관리하는 데 사용됩니다.",
+                },
+                terms: {
+                    title: "이용약관",
+                    last_updated: "최종 수정일",
+                    s1_title: "1. 약관의 동의",
+                    s1_desc: "당사 웹사이트에 접속함으로써 귀하는 본 이용약관을 준수하고 모든 관련 법률 및 규정을 따르는 데 동의하게 됩니다.",
+                    s2_title: "2. 지적 재산권",
+                    s2_desc: "사이트와 관련된 콘텐츠, 조직, 그래픽, 디자인, 편집 및 기타 사항은 관련 저작권, 상표 및 기타 소유권에 따라 보호됩니다.",
+                    s3_title: "3. 면책 조항",
+                    s3_desc: "대연이엔지 웹사이트의 자료는 '있는 그대로' 제공됩니다. 대연이엔지는 명시적이거나 묵시적인 어떠한 보증도 하지 않으며, 상품성 또는 특정 목적에의 적합성에 대한 묵시적 보증을 포함하여 기타 모든 보증을 부인합니다.",
+                }
+            },
         },
         cta: {
             title: "함께 미래를 설계하십시오.",
