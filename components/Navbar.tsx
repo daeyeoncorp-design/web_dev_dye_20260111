@@ -18,6 +18,16 @@ export default function Navbar() {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const supabase = createClient();
 
+    const [categories, setCategories] = useState<{ name: string, slug: string }[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const { data } = await supabase.from('categories').select('name, slug').order('order', { ascending: true });
+            if (data) setCategories(data);
+        }
+        fetchCategories();
+    }, []);
+
     // Construct NAV_ITEMS dynamically based on current language
     const NAV_ITEMS = [
         {
@@ -41,8 +51,10 @@ export default function Navbar() {
         {
             id: "products",
             label: t.nav.products,
-            href: "/#products",
-            subItems: t.nav.sub_products.map(label => ({ label, href: "/#products" }))
+            href: "/products",
+            subItems: categories.length > 0
+                ? categories.map(c => ({ label: c.name, href: `/products?category=${c.slug}` }))
+                : t.nav.sub_products.map(label => ({ label, href: "/products" }))
         },
         {
             id: "support",
