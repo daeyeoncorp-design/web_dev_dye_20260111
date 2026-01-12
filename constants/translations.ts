@@ -162,6 +162,38 @@ export const TRANSLATIONS = {
             title: "Let's Build Together.",
             subtitle: "Setting the standard for engineering excellence.",
             button: "Contact US",
+        },
+        support_page: {
+            hero: {
+                title: "How can we help?",
+                subtitle: "Technical resources, inquiries, and global support.",
+            },
+            tabs: {
+                resources: "Resources",
+                contact: "Contact",
+                location: "Location",
+            },
+            resources: {
+                manuals: "User Manuals",
+                brochures: "Brochures",
+                certifications: "Certifications",
+                download: "Download",
+            },
+            contact: {
+                title: "Send us a message",
+                name: "Your Name",
+                email: "Email Address",
+                subject: "Subject",
+                message: "Message",
+                submit: "Send Message",
+                info_title: "Contact Info",
+                email_label: "Email",
+                phone_label: "Phone",
+            },
+            location: {
+                title: "Visit Us",
+                address: "135-11, Dangha-ro, Namsa-eup, Cheoin-gu, Yongin-si, Gyeonggi-do, Korea",
+            }
         }
     },
     ko: {
@@ -326,6 +358,38 @@ export const TRANSLATIONS = {
             title: "함께 미래를 설계하십시오.",
             subtitle: "엔지니어링의 새로운 기준을 제시합니다.",
             button: "문의하기"
+        },
+        support_page: {
+            hero: {
+                title: "무엇을 도와드릴까요?",
+                subtitle: "기술 자료, 문의하기 및 고객 지원 센터.",
+            },
+            tabs: {
+                resources: "자료실",
+                contact: "문의하기",
+                location: "오시는 길",
+            },
+            resources: {
+                manuals: "사용자 매뉴얼",
+                brochures: "브로슈어",
+                certifications: "인증서",
+                download: "다운로드",
+            },
+            contact: {
+                title: "문의하기",
+                name: "성함",
+                email: "이메일",
+                subject: "제목",
+                message: "내용",
+                submit: "메시지 보내기",
+                info_title: "연락처",
+                email_label: "이메일",
+                phone_label: "전화번호",
+            },
+            location: {
+                title: "오시는 길",
+                address: "경기도 용인시 처인구 남사읍 당하로 135-11",
+            }
         }
     }
 };
