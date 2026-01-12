@@ -95,7 +95,7 @@ export default function Home() {
             </p>
 
             <a
-              href="#"
+              href="/support?tab=contact"
               className="inline-block px-12 py-5 text-lg font-semibold text-white bg-blue-600 rounded-full hover:bg-blue-500 transition-all duration-300 shadow-[0_0_30px_rgba(0,80,255,0.4)] hover:shadow-[0_0_50px_rgba(0,214,255,0.6)] hover:scale-105 active:scale-95"
             >
               {t.cta.button}

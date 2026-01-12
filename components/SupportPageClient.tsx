@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/context/LanguageContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tables } from "@/types/supabase";
+import { useSearchParams } from "next/navigation";
 
 type Resource = Tables<"resources">;
 
@@ -15,7 +16,15 @@ export default function SupportPageClient({
     resources: Resource[]
 }) {
     const { t } = useLanguage();
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<'resources' | 'contact' | 'location'>('resources');
+
+    useEffect(() => {
+        const tab = searchParams.get("tab");
+        if (tab === "contact" || tab === "location" || tab === "resources") {
+            setActiveTab(tab);
+        }
+    }, [searchParams]);
 
     // Filter resources by type for better organization if needed, or just list all
     // For this design, let's group them or just list them. The design had separate icons.
