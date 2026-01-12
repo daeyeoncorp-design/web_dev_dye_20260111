@@ -65,6 +65,18 @@ export default function Navbar() {
         };
     }, [isMobileMenuOpen]);
 
+    // Close mobile menu on resize to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 768) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const toggleMobileSubmenu = (id: string) => {
         setMobileExpanded(mobileExpanded === id ? null : id);
     };
