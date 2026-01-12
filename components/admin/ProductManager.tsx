@@ -57,6 +57,7 @@ export default function ProductManager({
     const [subtitle, setSubtitle] = useState("");
     const [categoryId, setCategoryId] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [details, setDetails] = useState("");
     const [features, setFeatures] = useState<string[]>([]);
     const [tags, setTags] = useState<string[]>([]);
 
@@ -70,6 +71,7 @@ export default function ProductManager({
         setSubtitle("");
         setCategoryId(categories[0]?.id || "");
         setImageUrl("");
+        setDetails("");
         setFeatures([]);
         setTags([]);
         setIsEditing(null);
@@ -82,6 +84,7 @@ export default function ProductManager({
         setSubtitle(product.subtitle || "");
         setCategoryId(product.category_id || "");
         setImageUrl(product.image_url || "");
+        setDetails(product.details || "");
         setFeatures(product.features || []);
         setTags(product.tags || []);
     };
@@ -129,6 +132,7 @@ export default function ProductManager({
             subtitle,
             category_id: categoryId || null,
             image_url: imageUrl,
+            details,
             features,
             tags
         };
@@ -236,6 +240,16 @@ export default function ProductManager({
                         <div>
                             <label className="block text-xs uppercase text-white/40 font-bold mb-2">Subtitle</label>
                             <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} placeholder="e.g. High torque for industrial use" />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs uppercase text-white/40 font-bold mb-2">Details (Visible in Modal)</label>
+                            <TextArea
+                                value={details}
+                                onChange={(e) => setDetails(e.target.value)}
+                                placeholder="Enter detailed product description here..."
+                                className="min-h-[150px]"
+                            />
                         </div>
 
                         {/* Features */}

@@ -37,6 +37,8 @@ export type Database = {
                 Row: {
                     category_id: string | null
                     created_at: string
+                    details: string | null
+                    display_order: number | null
                     features: string[] | null
                     id: string
                     image_url: string | null

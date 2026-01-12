@@ -117,9 +117,7 @@ export default function ProductCatalog({
                                             </div>
                                         )}
                                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <span className="bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full font-medium border border-white/20 transform scale-90 group-hover:scale-100 transition-transform">
-                                                View Details
-                                            </span>
+                                            {/* Removed Button as requested, just hover effect */}
                                         </div>
                                     </div>
                                     <div className="p-6 flex-1 flex flex-col">
@@ -208,7 +206,13 @@ export default function ProductCatalog({
                                         )}
                                     </div>
 
-                                    <div className="prose prose-invert max-w-none flex-1">
+                                    <div className="prose prose-invert max-w-none flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                                        {selectedProduct.details && (
+                                            <div className="mb-6 whitespace-pre-wrap text-white/80 leading-relaxed">
+                                                {selectedProduct.details}
+                                            </div>
+                                        )}
+
                                         {selectedProduct.features && selectedProduct.features.length > 0 && (
                                             <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
                                                 <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-4">Key Features</h3>
