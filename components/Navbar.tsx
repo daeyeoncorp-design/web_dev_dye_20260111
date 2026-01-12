@@ -215,7 +215,7 @@ export default function Navbar() {
                                     {/* Trigger */}
                                     <Link
                                         href={item.href}
-                                        className={`text-sm font-medium transition-colors duration-300 relative z-50 ${activeHover ? (activeHover === item.id ? "text-white" : "text-white/40") : "text-white/70 hover:text-white"}`}
+                                        className={`text-sm font-medium transition-colors duration-300 relative z-50 select-none active:scale-100 active:translate-y-0 ${activeHover ? (activeHover === item.id ? "text-white" : "text-white/40") : "text-white/70 hover:text-white"}`}
                                     >
                                         {item.label}
                                     </Link>
