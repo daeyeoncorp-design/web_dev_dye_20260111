@@ -234,7 +234,7 @@ export default function Navbar() {
                                                     <Link
                                                         key={idx}
                                                         href={sub.href}
-                                                        className="text-white/70 hover:text-white text-base font-medium transition-colors text-left"
+                                                        className="block text-white/70 hover:text-white text-base font-medium transition-colors text-left"
                                                     >
                                                         {sub.label.trim()}
                                                     </Link>
