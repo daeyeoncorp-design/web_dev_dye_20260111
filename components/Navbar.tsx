@@ -161,7 +161,7 @@ export default function Navbar() {
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                         className="fixed top-0 left-0 right-0 bg-[#050505]/95 backdrop-blur-xl border-b border-white/5 z-40 shadow-2xl origin-top"
-                        style={{ paddingTop: "80px" }}
+                        style={{ paddingTop: isScrolled ? "64px" : "80px" }}
                     />
                 )}
             </AnimatePresence>
@@ -224,11 +224,11 @@ export default function Navbar() {
                                     <AnimatePresence>
                                         {activeHover === item.id && (
                                             <motion.div
-                                                initial={{ opacity: 0, y: -10 }}
+                                                initial={{ opacity: 0, y: -5 }}
                                                 animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: -10 }}
+                                                exit={{ opacity: 0, y: -5 }}
                                                 transition={{ duration: 0.2 }}
-                                                className="absolute top-full left-0 mt-2 w-max min-w-[150px] flex flex-col gap-3 py-4"
+                                                className="absolute top-full left-0 w-max min-w-[150px] flex flex-col gap-3 py-6"
                                             >
                                                 {item.subItems.map((sub, idx) => (
                                                     <Link
@@ -236,7 +236,7 @@ export default function Navbar() {
                                                         href={sub.href}
                                                         className="text-white/70 hover:text-white text-base font-medium transition-colors text-left"
                                                     >
-                                                        {sub.label}
+                                                        {sub.label.trim()}
                                                     </Link>
                                                 ))}
                                             </motion.div>
