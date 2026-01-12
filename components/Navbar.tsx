@@ -214,7 +214,7 @@ export default function Navbar() {
                     <div className="hidden md:flex z-50 items-center gap-4">
                         <button
                             onMouseEnter={() => setActiveHover(null)}
-                            className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
+                            className="text-sm font-medium text-white/70 hover:text-white transition-colors duration-300"
                         >
                             {t.nav.login}
                         </button>
@@ -303,12 +303,12 @@ export default function Navbar() {
                         </div>
 
                         {/* Mobile Login Button (Bottom, scroll safe) */}
-                        <div className="mt-8 w-full max-w-lg mx-auto">
+                        <div className="mt-8 w-full max-w-lg mx-auto pb-8">
                             <motion.button
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
-                                className="w-full py-3 text-lg font-bold text-black bg-white rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
+                                className="w-full py-3 text-2xl font-bold text-white/70 hover:text-white transition-colors text-left"
                             >
                                 {t.nav.login}
                             </motion.button>
