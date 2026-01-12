@@ -33,7 +33,7 @@ export default function Footer() {
                 </div>
                 <div className="p-6 border-t border-white/10 bg-[#111]">
                     <button onClick={onClose} className="w-full pym-3 bg-white text-black font-bold py-3 rounded-lg hover:bg-white/90 transition-colors">
-                        Close
+                        {t.footer.modals.close}
                     </button>
                 </div>
             </motion.div>
@@ -87,15 +87,15 @@ export default function Footer() {
             <AnimatePresence>
                 {activeModal === 'careers' && (
                     <Modal
-                        title="Careers at DAEYEON"
+                        title={t.footer.modals.careers.title}
                         onClose={() => setActiveModal(null)}
                         content={
                             <div className="space-y-4">
-                                <p>We are always looking for talented individuals to join our team.</p>
-                                <p>Currently, there are no specific open positions listed online, but we welcome spontaneous applications.</p>
+                                <p>{t.footer.modals.careers.p1}</p>
+                                <p>{t.footer.modals.careers.p2}</p>
                                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
-                                    <p className="font-semibold text-white mb-2">Contact HR</p>
-                                    <p>Please send your resume and cover letter to:</p>
+                                    <p className="font-semibold text-white mb-2">{t.footer.modals.careers.contact_title}</p>
+                                    <p>{t.footer.modals.careers.contact_desc}</p>
                                     <a href="mailto:careers@daeyeon.com" className="text-blue-400 hover:text-blue-300 block mt-1">careers@daeyeon.com</a>
                                 </div>
                             </div>
@@ -104,34 +104,34 @@ export default function Footer() {
                 )}
                 {activeModal === 'privacy' && (
                     <Modal
-                        title="Privacy Policy"
+                        title={t.footer.modals.privacy.title}
                         onClose={() => setActiveModal(null)}
                         content={
                             <div>
-                                <p className="mb-4">Last Updated: {new Date().getFullYear()}</p>
-                                <h4 className="text-white font-bold mb-2">1. Introduction</h4>
-                                <p className="mb-4">DAEYEON ENG respects your privacy and is committed to protecting your personal data. This privacy policy will inform you as to how we look after your personal data when you visit our website.</p>
-                                <h4 className="text-white font-bold mb-2">2. Data We Collect</h4>
-                                <p className="mb-4">We may collect, use, store and transfer different kinds of personal data about you such as Identity Data (name) and Contact Data (email, phone number) when you fill out our contact forms.</p>
-                                <h4 className="text-white font-bold mb-2">3. How We Use Your Data</h4>
-                                <p className="mb-4">We will only use your personal data when the law allows us to. Most commonly, we will use your personal data to respond to your inquiries and manage our relationship with you.</p>
+                                <p className="mb-4">{t.footer.modals.privacy.last_updated}: {new Date().getFullYear()}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.privacy.s1_title}</h4>
+                                <p className="mb-4">{t.footer.modals.privacy.s1_desc}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.privacy.s2_title}</h4>
+                                <p className="mb-4">{t.footer.modals.privacy.s2_desc}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.privacy.s3_title}</h4>
+                                <p className="mb-4">{t.footer.modals.privacy.s3_desc}</p>
                             </div>
                         }
                     />
                 )}
                 {activeModal === 'terms' && (
                     <Modal
-                        title="Terms of Service"
+                        title={t.footer.modals.terms.title}
                         onClose={() => setActiveModal(null)}
                         content={
                             <div>
-                                <p className="mb-4">Last Updated: {new Date().getFullYear()}</p>
-                                <h4 className="text-white font-bold mb-2">1. Agreement to Terms</h4>
-                                <p className="mb-4">By accessing our website, you agree to be bound by these Terms of Service and to comply with all applicable laws and regulations.</p>
-                                <h4 className="text-white font-bold mb-2">2. Intellectual Property</h4>
-                                <p className="mb-4">The content, organization, graphics, design, compilation, and other matters related to the Site are protected under applicable copyrights, trademarks and other proprietary rights.</p>
-                                <h4 className="text-white font-bold mb-2">3. Disclaimer</h4>
-                                <p className="mb-4">The materials on DAEYEON ENG's website are provided on an 'as is' basis. DAEYEON ENG makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability.</p>
+                                <p className="mb-4">{t.footer.modals.terms.last_updated}: {new Date().getFullYear()}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.terms.s1_title}</h4>
+                                <p className="mb-4">{t.footer.modals.terms.s1_desc}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.terms.s2_title}</h4>
+                                <p className="mb-4">{t.footer.modals.terms.s2_desc}</p>
+                                <h4 className="text-white font-bold mb-2">{t.footer.modals.terms.s3_title}</h4>
+                                <p className="mb-4">{t.footer.modals.terms.s3_desc}</p>
                             </div>
                         }
                     />
