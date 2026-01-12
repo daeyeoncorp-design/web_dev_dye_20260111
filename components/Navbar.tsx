@@ -4,6 +4,8 @@ import { motion, useScroll, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export default function Navbar() {
     const { scrollY } = useScroll();
@@ -12,6 +14,9 @@ export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
     const { t, language, toggleLanguage } = useLanguage();
+    const [user, setUser] = useState<User | null>(null);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const supabase = createClient();
 
     // Construct NAV_ITEMS dynamically based on current language
     const NAV_ITEMS = [
@@ -76,6 +81,26 @@ export default function Navbar() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    // Auth State Listener
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+        };
+        getUser();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        window.location.reload(); // Refresh to ensure clean state
+    };
 
     const toggleMobileSubmenu = (id: string) => {
         setMobileExpanded(mobileExpanded === id ? null : id);
@@ -195,13 +220,51 @@ export default function Navbar() {
 
                         {/* Right: CTA & Language (Desktop Only) */}
                         <div className="hidden md:flex z-50 items-center gap-4">
-                            <Link
-                                href="/login"
-                                onMouseEnter={() => setActiveHover(null)}
-                                className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
-                            >
-                                {t.nav.login}
-                            </Link>
+                            {!user ? (
+                                <Link
+                                    href="/login"
+                                    onMouseEnter={() => setActiveHover(null)}
+                                    className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
+                                >
+                                    {t.nav.login}
+                                </Link>
+                            ) : (
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                        className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center hover:bg-white/20 transition-all text-white/90"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </button>
+
+                                    <AnimatePresence>
+                                        {isProfileOpen && (
+                                            <motion.div
+                                                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="absolute right-0 top-full mt-2 w-48 bg-[#1a1a1a]/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1 z-50"
+                                            >
+                                                <div className="px-4 py-3 border-b border-white/5">
+                                                    <p className="text-xs text-white/50">{t.common.company_name} Account</p>
+                                                    <p className="text-sm font-medium text-white truncate">{user.email}</p>
+                                                </div>
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 transition-colors flex items-center gap-2"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                                    Logout
+                                                </button>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
+                            )}
                             <button
                                 onClick={toggleLanguage}
                                 className="text-2xl hover:scale-110 transition-transform"
@@ -310,13 +373,22 @@ export default function Navbar() {
 
                         {/* Mobile Login Button (Text Style) & Language */}
                         <div className="mt-8 w-full max-w-lg mx-auto pb-8 flex items-center justify-between">
-                            <Link
-                                href="/login"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-2xl font-bold text-white/70 hover:text-white transition-colors text-left"
-                            >
-                                {t.nav.login}
-                            </Link>
+                            {!user ? (
+                                <Link
+                                    href="/login"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-2xl font-bold text-white/70 hover:text-white transition-colors text-left"
+                                >
+                                    {t.nav.login}
+                                </Link>
+                            ) : (
+                                <button
+                                    onClick={handleLogout}
+                                    className="text-2xl font-bold text-red-500/80 hover:text-red-500 transition-colors text-left flex items-center gap-2"
+                                >
+                                    {t.nav.logout || "Log out"}
+                                </button>
+                            )}
                             <button
                                 onClick={toggleLanguage}
                                 className="text-2xl hover:scale-110 transition-transform"
