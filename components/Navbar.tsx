@@ -61,7 +61,10 @@ export default function Navbar() {
             id: "support",
             label: t.nav.support,
             href: "/support",
-            subItems: t.nav.sub_support.map(label => ({ label, href: "/support" }))
+            subItems: t.nav.sub_support.map((label, idx) => {
+                const query = ["?tab=resources", "?tab=contact", "?tab=location"];
+                return { label, href: `/support${query[idx] || ""}` };
+            })
         }
     ];
 
