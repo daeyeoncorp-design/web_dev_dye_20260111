@@ -217,9 +217,17 @@ export default function SupportPageClient({
                             className="max-w-5xl mx-auto"
                         >
                             <div className="bg-[#111] border border-white/5 rounded-3xl overflow-hidden">
-                                <div className="h-[400px] bg-[#222] relative flex items-center justify-center">
-                                    {/* Placeholder for Google Map Embed */}
-                                    <div className="text-white/20 font-bold text-lg">Google Map Embed Area</div>
+                                <div className="h-[400px] bg-[#222] relative flex items-center justify-center overflow-hidden">
+                                    <iframe
+                                        width="100%"
+                                        height="100%"
+                                        frameBorder="0"
+                                        style={{ border: 0, filter: "grayscale(100%) invert(92%) contrast(83%)" }}
+                                        src={`https://maps.google.com/maps?q=${encodeURIComponent("135-11, Dangha-ro, Namsa-eup, Cheoin-gu, Yongin-si, Gyeonggi-do, Korea")}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                    ></iframe>
                                 </div>
                                 <div className="p-8 md:p-12 flex items-start justify-between">
                                     <div>
