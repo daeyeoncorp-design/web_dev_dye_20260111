@@ -21,6 +21,7 @@ export default function ProductCatalog({
 
     const [activeCategory, setActiveCategory] = useState<string>("all");
     const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     useEffect(() => {
         if (initialSlug) {
@@ -42,7 +43,7 @@ export default function ProductCatalog({
     }, [activeCategory, products]);
 
     return (
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 relative">
             {/* Sidebar / Filter (Desktop) */}
             <aside className="w-full lg:w-64 flex-shrink-0">
                 <div className="sticky top-24 space-y-8">
@@ -100,7 +101,8 @@ export default function ProductCatalog({
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.3 }}
                                     key={product.id}
-                                    className="group bg-[#111] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all hover:shadow-2xl hover:shadow-blue-500/10 flex flex-col"
+                                    onClick={() => setSelectedProduct(product)}
+                                    className="group bg-[#111] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all hover:shadow-2xl hover:shadow-blue-500/10 flex flex-col cursor-pointer"
                                 >
                                     <div className="aspect-[4/3] bg-[#0a0a0a] relative overflow-hidden">
                                         {product.image_url ? (
@@ -114,28 +116,17 @@ export default function ProductCatalog({
                                                 <span className="text-white/20">No Image</span>
                                             </div>
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                                            <button className="bg-white text-black px-4 py-2 rounded-full font-medium text-sm transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <span className="bg-white/10 backdrop-blur-md text-white px-6 py-2 rounded-full font-medium border border-white/20 transform scale-90 group-hover:scale-100 transition-transform">
                                                 View Details
-                                            </button>
+                                            </span>
                                         </div>
                                     </div>
                                     <div className="p-6 flex-1 flex flex-col">
                                         <div className="flex-1">
-                                            <h3 className="text-xl font-bold text-white mb-1">{product.name}</h3>
+                                            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{product.name}</h3>
                                             {product.subtitle && (
                                                 <p className="text-sm text-white/50 mb-4">{product.subtitle}</p>
-                                            )}
-
-                                            {product.features && product.features.length > 0 && (
-                                                <ul className="space-y-1 mb-4">
-                                                    {product.features.slice(0, 3).map((feature, i) => (
-                                                        <li key={i} className="text-xs text-white/60 flex items-start gap-2">
-                                                            <span className="text-blue-500 mt-0.5">•</span>
-                                                            {feature}
-                                                        </li>
-                                                    ))}
-                                                </ul>
                                             )}
                                         </div>
 
@@ -155,6 +146,99 @@ export default function ProductCatalog({
                     </div>
                 )}
             </div>
+
+            {/* Product Detail Modal */}
+            <AnimatePresence>
+                {selectedProduct && (
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedProduct(null)}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]"
+                        />
+
+                        {/* Modal */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="fixed inset-0 z-[70] flex items-center justify-center p-4 sm:p-6 pointer-events-none"
+                        >
+                            <div className="bg-[#111] border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl pointer-events-auto relative flex flex-col md:flex-row">
+                                <button
+                                    onClick={() => setSelectedProduct(null)}
+                                    className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+                                >
+                                    ✕
+                                </button>
+
+                                {/* Image Section */}
+                                <div className="w-full md:w-1/2 bg-black aspect-square md:aspect-auto relative">
+                                    {selectedProduct.image_url ? (
+                                        <img
+                                            src={selectedProduct.image_url}
+                                            alt={selectedProduct.name}
+                                            className="w-full h-full object-contain p-4"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center">
+                                            <span className="text-white/20">No Image</span>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Content Section */}
+                                <div className="w-full md:w-1/2 p-8 md:p-10 flex flex-col">
+                                    <div className="mb-6">
+                                        {selectedProduct.tags && selectedProduct.tags.length > 0 && (
+                                            <div className="flex flex-wrap gap-2 mb-4">
+                                                {selectedProduct.tags.map((tag, i) => (
+                                                    <span key={i} className="text-xs font-semibold uppercase tracking-wider bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">{selectedProduct.name}</h2>
+                                        {selectedProduct.subtitle && (
+                                            <p className="text-xl text-white/50">{selectedProduct.subtitle}</p>
+                                        )}
+                                    </div>
+
+                                    <div className="prose prose-invert max-w-none flex-1">
+                                        {selectedProduct.features && selectedProduct.features.length > 0 && (
+                                            <div className="bg-white/5 rounded-2xl p-6 border border-white/5">
+                                                <h3 className="text-sm font-semibold text-white/40 uppercase tracking-wider mb-4">Key Features</h3>
+                                                <ul className="space-y-3">
+                                                    {selectedProduct.features.map((feature, i) => (
+                                                        <li key={i} className="flex items-start gap-3">
+                                                            <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+                                                            <span className="text-white/80 leading-relaxed">{feature}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="mt-8 pt-6 border-t border-white/10">
+                                        <button
+                                            onClick={() => window.location.href = `mailto:support@daeyeon.com?subject=Inquiry about ${selectedProduct.name}`}
+                                            className="w-full py-4 bg-white text-black font-bold rounded-xl hover:bg-white/90 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                                            Inquiry about this product
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

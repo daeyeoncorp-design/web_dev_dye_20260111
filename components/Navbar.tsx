@@ -15,6 +15,7 @@ export default function Navbar() {
     const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
     const { t, language, toggleLanguage } = useLanguage();
     const [user, setUser] = useState<User | null>(null);
+    const [userRole, setUserRole] = useState<string | null>(null);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const supabase = createClient();
 
@@ -99,11 +100,23 @@ export default function Navbar() {
         const getUser = async () => {
             const { data: { user } } = await supabase.auth.getUser();
             setUser(user);
+            if (user) {
+                const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+                if (profile) setUserRole(profile.role);
+            }
         };
         getUser();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user ?? null);
+            if (session?.user) {
+                // simple refetch to be safe
+                supabase.from('profiles').select('role').eq('id', session.user.id).single().then(({ data }) => {
+                    if (data) setUserRole(data.role);
+                });
+            } else {
+                setUserRole(null);
+            }
         });
 
         return () => subscription.unsubscribe();
@@ -265,6 +278,16 @@ export default function Navbar() {
                                                     <p className="text-xs text-white/50">{t.common.company_name} Account</p>
                                                     <p className="text-sm font-medium text-white truncate">{user.email}</p>
                                                 </div>
+                                                {(userRole === 'admin' || userRole === 'super_admin') && (
+                                                    <Link
+                                                        href="/admin"
+                                                        onClick={() => setIsProfileOpen(false)}
+                                                        className="w-full text-left px-4 py-2.5 text-sm text-blue-400 hover:bg-white/5 transition-colors flex items-center gap-2 border-b border-white/5"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+                                                        Dashboard
+                                                    </Link>
+                                                )}
                                                 <button
                                                     onClick={handleLogout}
                                                     className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-white/5 transition-colors flex items-center gap-2"

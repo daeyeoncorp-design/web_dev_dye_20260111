@@ -202,7 +202,7 @@ export default function ProductManager({
         <div className="flex flex-col xl:flex-row gap-8">
             {/* Form Section */}
             <div className="w-full xl:w-2/5 order-first xl:order-last">
-                <div className="bg-[#111] p-6 rounded-2xl border border-white/5 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
+                <div className="bg-[#111] p-6 rounded-2xl border border-white/5 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden">
                     <h2 className="text-xl font-bold mb-6">{isEditing ? "Edit Product" : "Add New Product"}</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                         <div className="flex gap-4">
