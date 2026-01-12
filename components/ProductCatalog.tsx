@@ -77,7 +77,7 @@ export default function ProductCatalog({
             <div className="flex-1">
                 <div className="mb-8 flex items-end justify-between border-b border-white/10 pb-4">
                     <div>
-                        <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+                        <h1 className="text-3xl lg:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60">
                             {activeCategory === "all" ? "All Products" : categories.find(c => c.id === activeCategory)?.name}
                         </h1>
                         <p className="text-white/50">
