@@ -215,7 +215,8 @@ export default function Navbar() {
                                     {/* Trigger */}
                                     <Link
                                         href={item.href}
-                                        className={`text-sm font-medium transition-colors duration-300 relative z-50 select-none active:scale-100 active:translate-y-0 ${activeHover ? (activeHover === item.id ? "text-white" : "text-white/40") : "text-white/70 hover:text-white"}`}
+                                        draggable={false}
+                                        className={`text-sm font-medium transition-colors duration-300 relative z-50 select-none !transform-none focus:outline-none inline-flex items-center h-full ${activeHover ? (activeHover === item.id ? "text-white" : "text-white/40") : "text-white/70 hover:text-white active:text-white"}`}
                                     >
                                         {item.label}
                                     </Link>
@@ -234,7 +235,8 @@ export default function Navbar() {
                                                     <Link
                                                         key={idx}
                                                         href={sub.href}
-                                                        className="block text-white/70 hover:text-white text-base font-medium transition-colors text-left"
+                                                        draggable={false}
+                                                        className="block text-white/70 hover:text-white text-base font-medium transition-colors text-left select-none !transform-none focus:outline-none"
                                                     >
                                                         {sub.label.trim()}
                                                     </Link>
