@@ -195,12 +195,13 @@ export default function Navbar() {
 
                         {/* Right: CTA & Language (Desktop Only) */}
                         <div className="hidden md:flex z-50 items-center gap-4">
-                            <button
+                            <Link
+                                href="/login"
                                 onMouseEnter={() => setActiveHover(null)}
                                 className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
                             >
                                 {t.nav.login}
-                            </button>
+                            </Link>
                             <button
                                 onClick={toggleLanguage}
                                 className="text-2xl hover:scale-110 transition-transform"
@@ -309,12 +310,13 @@ export default function Navbar() {
 
                         {/* Mobile Login Button (Text Style) & Language */}
                         <div className="mt-8 w-full max-w-lg mx-auto pb-8 flex items-center justify-between">
-                            <button
-                                onClick={() => { }}
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMobileMenuOpen(false)}
                                 className="text-2xl font-bold text-white/70 hover:text-white transition-colors text-left"
                             >
                                 {t.nav.login}
-                            </button>
+                            </Link>
                             <button
                                 onClick={toggleLanguage}
                                 className="text-2xl hover:scale-110 transition-transform"
