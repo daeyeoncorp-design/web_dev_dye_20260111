@@ -86,7 +86,7 @@ export default function SupportPageClient({
             </section>
 
             {/* Tabs Navigation */}
-            <div className="sticky top-16 z-40 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
+            <div className="sticky top-16 z-30 bg-[#050505]/80 backdrop-blur-xl border-b border-white/5">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="flex justify-center gap-2 md:gap-8 overflow-x-auto py-4">
                         {tabs.map((tab) => (
@@ -222,7 +222,7 @@ export default function SupportPageClient({
                                         width="100%"
                                         height="100%"
                                         frameBorder="0"
-                                        style={{ border: 0, filter: "grayscale(100%) invert(92%) contrast(83%)" }}
+                                        style={{ border: 0 }}
                                         src={`https://maps.google.com/maps?q=${encodeURIComponent("135-11, Dangha-ro, Namsa-eup, Cheoin-gu, Yongin-si, Gyeonggi-do, Korea")}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
                                         allowFullScreen
                                         loading="lazy"
