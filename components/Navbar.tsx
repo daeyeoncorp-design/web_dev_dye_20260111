@@ -10,6 +10,7 @@ export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeHover, setActiveHover] = useState<string | null>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
     const { t, language, toggleLanguage } = useLanguage();
 
     // Construct NAV_ITEMS dynamically based on current language
@@ -51,6 +52,22 @@ export default function Navbar() {
             setIsScrolled(latest > 50);
         });
     }, [scrollY]);
+
+    // Prevent body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
+    const toggleMobileSubmenu = (id: string) => {
+        setMobileExpanded(mobileExpanded === id ? null : id);
+    };
 
 
 
@@ -214,59 +231,90 @@ export default function Navbar() {
 
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
-                {
-                    isMobileMenuOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
-                            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                            transition={{ duration: 0.4 }}
-                            className="fixed inset-0 z-40 bg-black/80 flex flex-col pt-32 px-6 pb-12"
-                        >
-                            <div className="flex flex-col gap-8 flex-1">
-                                {NAV_ITEMS.map((item, idx) => (
-                                    <motion.div
-                                        key={item.id}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.1 + idx * 0.1 }}
+                {isMobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+                        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        transition={{ duration: 0.4 }}
+                        className="fixed inset-0 z-40 bg-black/95 flex flex-col pt-24 px-6 pb-8 overflow-y-auto"
+                    >
+                        <div className="flex flex-col gap-6 flex-1 w-full max-w-lg mx-auto">
+                            {NAV_ITEMS.map((item, idx) => (
+                                <motion.div
+                                    key={item.id}
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.1 + idx * 0.1 }}
+                                    className="border-b border-white/10 pb-4"
+                                >
+                                    <div
+                                        onClick={() => toggleMobileSubmenu(item.id)}
+                                        className="flex items-center justify-between cursor-pointer group"
                                     >
-                                        <Link
-                                            href={item.href}
-                                            onClick={() => setIsMobileMenuOpen(false)}
-                                            className="text-4xl font-bold text-white hover:text-blue-400 transition-colors"
-                                        >
+                                        <span className={`text-2xl font-bold transition-colors ${mobileExpanded === item.id ? "text-blue-400" : "text-white group-hover:text-blue-300"}`}>
                                             {item.label}
-                                        </Link>
-                                        {/* Mobile Submenu Items */}
-                                        <div className="flex flex-col gap-3 mt-4 pl-4 border-l border-white/10">
-                                            {item.subItems.map((sub, subIdx) => (
-                                                <Link
-                                                    key={subIdx}
-                                                    href={sub.href}
-                                                    onClick={() => setIsMobileMenuOpen(false)}
-                                                    className="text-lg text-white/60 hover:text-white transition-colors"
-                                                >
-                                                    {sub.label}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    </motion.div>
-                                ))}
-                            </div>
+                                        </span>
+                                        {/* Chevron Icon */}
+                                        <motion.svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            animate={{ rotate: mobileExpanded === item.id ? 180 : 0 }}
+                                            className="text-white/50"
+                                        >
+                                            <polyline points="6 9 12 15 18 9"></polyline>
+                                        </motion.svg>
+                                    </div>
 
-                            {/* Mobile Login Button (Bottom) */}
+                                    {/* Mobile Accordion Submenu */}
+                                    <AnimatePresence>
+                                        {mobileExpanded === item.id && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: "auto", opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden"
+                                            >
+                                                <div className="flex flex-col gap-4 mt-4 pl-4 border-l-2 border-white/10">
+                                                    {item.subItems.map((sub, subIdx) => (
+                                                        <Link
+                                                            key={subIdx}
+                                                            href={sub.href}
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                            className="text-lg text-white/60 hover:text-white transition-colors block py-1"
+                                                        >
+                                                            {sub.label}
+                                                        </Link>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Mobile Login Button (Bottom, scroll safe) */}
+                        <div className="mt-8 w-full max-w-lg mx-auto">
                             <motion.button
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.5 }}
-                                className="w-full py-4 text-lg font-bold text-black bg-white rounded-2xl hover:bg-blue-50 transition-colors mt-auto"
+                                className="w-full py-3 text-lg font-bold text-black bg-white rounded-xl hover:bg-blue-50 transition-colors shadow-lg"
                             >
                                 {t.nav.login}
                             </motion.button>
-                        </motion.div>
-                    )
-                }
+                        </div>
+                    </motion.div>
+                )}
             </AnimatePresence>
         </>
     );
