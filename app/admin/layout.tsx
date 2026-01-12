@@ -27,8 +27,9 @@ export default async function AdminLayout({
 
     const NAV_ITEMS = [
         { label: "Overview", href: "/admin", icon: "LayoutDashboard" },
-        { label: "Categories", href: "/admin/categories", icon: "ListTree" },
         { label: "Products", href: "/admin/products", icon: "Package" },
+        { label: "Resources", href: "/admin/resources", icon: "FolderOpen" },
+        { label: "Categories", href: "/admin/categories", icon: "ListTree" },
         { label: "Settings", href: "/admin/settings", icon: "Settings" },
     ];
 
@@ -55,6 +56,7 @@ export default async function AdminLayout({
                                 {item.label === 'Overview' && '📊'}
                                 {item.label === 'Categories' && '🗂️'}
                                 {item.label === 'Products' && '📦'}
+                                {item.label === 'Resources' && '📂'}
                                 {item.label === 'Settings' && '⚙️'}
                             </span>
                             {item.label}
