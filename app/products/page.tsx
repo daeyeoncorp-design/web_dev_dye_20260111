@@ -1,6 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import ProductCatalog from "@/components/ProductCatalog";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const revalidate = 60; // Revalidate every minute
 
@@ -21,6 +22,8 @@ export default async function ProductsPage() {
                     products={products || []}
                 />
             </div>
+
+            <Footer />
         </main>
     );
 }
