@@ -9,6 +9,7 @@ export default function Navbar() {
     const { scrollY } = useScroll();
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeHover, setActiveHover] = useState<string | null>(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { t, language, toggleLanguage } = useLanguage();
 
     // Construct NAV_ITEMS dynamically based on current language
@@ -97,14 +98,15 @@ export default function Navbar() {
                         <div className="flex items-center z-50">
                             <Link href="/" className="relative h-6 overflow-hidden w-[140px]" onMouseEnter={() => setActiveHover(null)}>
                                 <motion.span
-                                    className="absolute left-0 top-0 whitespace-nowrap text-lg font-medium tracking-tight text-white/90"
+                                    className={`absolute left-0 top-0 whitespace-nowrap text-lg font-medium tracking-tight text-white/90 ${isMobileMenuOpen ? "opacity-0" : ""}`}
                                     animate={{
                                         opacity: isScrolled ? 0 : 1,
                                         y: isScrolled ? -20 : 0
                                     }}
                                     transition={{ duration: 0.4 }}
                                 >
-                                    {t.common.company_name}
+                                    <span className="hidden md:inline">{t.common.company_name}</span>
+                                    <span className="md:hidden">{t.common.ticker}</span>
                                 </motion.span>
                                 <motion.span
                                     className="absolute left-0 top-0 whitespace-nowrap text-lg font-bold tracking-tight text-red-500"
@@ -162,25 +164,110 @@ export default function Navbar() {
                             ))}
                         </div>
 
-                        {/* Right: CTA & Language */}
-                        <div className="z-50 flex items-center gap-4">
-                            <button
-                                onMouseEnter={() => setActiveHover(null)}
-                                className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
-                            >
-                                {t.nav.login}
-                            </button>
+                        {/* Mobile Burger Menu Button */}
+                        <div className="md:hidden z-50 flex items-center gap-4">
                             <button
                                 onClick={toggleLanguage}
-                                className="text-2xl hover:scale-110 transition-transform"
+                                className="text-2xl hover:scale-110 transition-transform mr-2"
                                 title="Switch Language"
                             >
                                 {language === "en" ? "🇬🇧" : "🇰🇷"}
                             </button>
+                            <button
+                                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                className="relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 z-50 group"
+                            >
+                                <motion.span
+                                    animate={isMobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                                    className="w-full h-[2px] bg-white rounded-full origin-center transition-all bg-white/80 group-hover:bg-white"
+                                />
+                                <motion.span
+                                    animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }}
+                                    className="w-full h-[2px] bg-white rounded-full transition-all bg-white/80 group-hover:bg-white"
+                                />
+                                <motion.span
+                                    animate={isMobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+                                    className="w-full h-[2px] bg-white rounded-full origin-center transition-all bg-white/80 group-hover:bg-white"
+                                />
+                            </button>
                         </div>
+
+                    </div>
+                    {/* Right: CTA & Language (Desktop only) */}
+                    <div className="hidden md:flex z-50 items-center gap-4">
+                        <button
+                            onMouseEnter={() => setActiveHover(null)}
+                            className="px-5 py-2 text-sm font-semibold text-white bg-white/10 rounded-full border border-white/10 hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-[0_0_15px_rgba(0,80,255,0.1)] hover:shadow-[0_0_20px_rgba(0,214,255,0.3)]"
+                        >
+                            {t.nav.login}
+                        </button>
+                        <button
+                            onClick={toggleLanguage}
+                            className="text-2xl hover:scale-110 transition-transform"
+                            title="Switch Language"
+                        >
+                            {language === "en" ? "🇬🇧" : "🇰🇷"}
+                        </button>
                     </div>
                 </div>
             </motion.nav>
+
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {
+                    isMobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                            animate={{ opacity: 1, backdropFilter: "blur(20px)" }}
+                            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                            transition={{ duration: 0.4 }}
+                            className="fixed inset-0 z-40 bg-black/80 flex flex-col pt-32 px-6 pb-12"
+                        >
+                            <div className="flex flex-col gap-8 flex-1">
+                                {NAV_ITEMS.map((item, idx) => (
+                                    <motion.div
+                                        key={item.id}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.1 + idx * 0.1 }}
+                                    >
+                                        <Link
+                                            href={item.href}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="text-4xl font-bold text-white hover:text-blue-400 transition-colors"
+                                        >
+                                            {item.label}
+                                        </Link>
+                                        {/* Mobile Submenu Items */}
+                                        <div className="flex flex-col gap-3 mt-4 pl-4 border-l border-white/10">
+                                            {item.subItems.map((sub, subIdx) => (
+                                                <Link
+                                                    key={subIdx}
+                                                    href={sub.href}
+                                                    onClick={() => setIsMobileMenuOpen(false)}
+                                                    className="text-lg text-white/60 hover:text-white transition-colors"
+                                                >
+                                                    {sub.label}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            {/* Mobile Login Button (Bottom) */}
+                            <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="w-full py-4 text-lg font-bold text-black bg-white rounded-2xl hover:bg-blue-50 transition-colors mt-auto"
+                            >
+                                {t.nav.login}
+                            </motion.button>
+                        </motion.div>
+                    )
+                }
+            </AnimatePresence>
         </>
     );
 }
