@@ -219,6 +219,12 @@ export const TRANSLATIONS = {
                 info_title: "Contact Info",
                 email_label: "Email",
                 phone_label: "Phone",
+                messages: {
+                    success: "Message sent successfully! We will get back to you soon.",
+                    error_generic: "Failed to send message. Please try again later.",
+                    error_rate_limit: "Too many requests. Please try again in a minute.",
+                    sending: "Sending...",
+                }
             },
             location: {
                 title: "Visit Us",
@@ -445,6 +451,12 @@ export const TRANSLATIONS = {
                 info_title: "연락처",
                 email_label: "이메일",
                 phone_label: "전화번호",
+                messages: {
+                    success: "메세지가 성공적으로 전송되었습니다! 곧 연락드리겠습니다.",
+                    error_generic: "메세지 전송에 실패했습니다. 잠시 후 다시 시도해주세요.",
+                    error_rate_limit: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
+                    sending: "전송 중...",
+                }
             },
             location: {
                 title: "오시는 길",

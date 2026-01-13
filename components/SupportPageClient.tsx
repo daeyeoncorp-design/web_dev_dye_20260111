@@ -60,6 +60,56 @@ export default function SupportPageClient({
         }
     ] as const;
 
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+        company_website: '' // Honeypot field
+    });
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setSubmitStatus('loading');
+        setErrorMessage('');
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Determine error type based on status for localization
+                if (response.status === 429) {
+                    throw new Error(t.support_page.contact.messages.error_rate_limit);
+                }
+                throw new Error(t.support_page.contact.messages.error_generic);
+            }
+
+            setSubmitStatus('success');
+            setFormData({ name: '', email: '', subject: '', message: '', company_website: '' });
+        } catch (error: any) {
+            setSubmitStatus('error');
+            // If the error message matches one of our keys, use it, otherwise fallback
+            setErrorMessage(error.message);
+        }
+    };
+
     return (
         <main className="min-h-screen bg-[#050505] text-white">
             <Navbar />
@@ -161,27 +211,84 @@ export default function SupportPageClient({
                             <div className="bg-[#111] border border-white/5 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-12">
                                 <div className="flex-1">
                                     <h3 className="text-2xl font-bold mb-6">{t.support_page.contact.title}</h3>
-                                    <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                                    <form className="space-y-6" onSubmit={handleSubmit}>
+                                        {/* Honeypot Field - Hidden */}
+                                        <div className="hidden">
+                                            <label>Website</label>
+                                            <input
+                                                type="text"
+                                                name="company_website"
+                                                value={formData.company_website}
+                                                onChange={handleChange}
+                                                tabIndex={-1}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-xs uppercase font-bold text-white/40 mb-2">{t.support_page.contact.name}</label>
-                                                <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors" />
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    required
+                                                    value={formData.name}
+                                                    onChange={handleChange}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors"
+                                                />
                                             </div>
                                             <div>
                                                 <label className="block text-xs uppercase font-bold text-white/40 mb-2">{t.support_page.contact.email}</label>
-                                                <input type="email" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors" />
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    required
+                                                    value={formData.email}
+                                                    onChange={handleChange}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors"
+                                                />
                                             </div>
                                         </div>
                                         <div>
                                             <label className="block text-xs uppercase font-bold text-white/40 mb-2">{t.support_page.contact.subject}</label>
-                                            <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors" />
+                                            <input
+                                                type="text"
+                                                name="subject"
+                                                required
+                                                value={formData.subject}
+                                                onChange={handleChange}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-white/30 transition-colors"
+                                            />
                                         </div>
                                         <div>
                                             <label className="block text-xs uppercase font-bold text-white/40 mb-2">{t.support_page.contact.message}</label>
-                                            <textarea className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 h-32 resize-none focus:outline-none focus:border-white/30 transition-colors"></textarea>
+                                            <textarea
+                                                name="message"
+                                                required
+                                                value={formData.message}
+                                                onChange={handleChange}
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 h-32 resize-none focus:outline-none focus:border-white/30 transition-colors"
+                                            ></textarea>
                                         </div>
-                                        <button className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-white/90 transition-colors">
-                                            {t.support_page.contact.submit}
+
+                                        {submitStatus === 'error' && (
+                                            <div className="p-4 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl text-sm">
+                                                {errorMessage}
+                                            </div>
+                                        )}
+
+                                        {submitStatus === 'success' && (
+                                            <div className="p-4 bg-green-500/10 border border-green-500/20 text-green-500 rounded-xl text-sm">
+                                                {t.support_page.contact.messages.success}
+                                            </div>
+                                        )}
+
+                                        <button
+                                            type="submit"
+                                            disabled={submitStatus === 'loading'}
+                                            className="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            {submitStatus === 'loading' ? t.support_page.contact.messages.sending : t.support_page.contact.submit}
                                         </button>
                                     </form>
                                 </div>
