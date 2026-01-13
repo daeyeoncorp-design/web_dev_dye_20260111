@@ -420,12 +420,24 @@ export default function Navbar() {
                                     {t.nav.login}
                                 </Link>
                             ) : (
-                                <button
-                                    onClick={handleLogout}
-                                    className="text-2xl font-bold text-red-500/80 hover:text-red-500 transition-colors text-left flex items-center gap-2"
-                                >
-                                    {t.nav.logout || "Log out"}
-                                </button>
+                                <div className="flex flex-col gap-4">
+                                    {(userRole === 'admin' || userRole === 'super_admin') && (
+                                        <Link
+                                            href="/admin"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            className="text-2xl font-bold text-blue-400 hover:text-blue-300 transition-colors text-left flex items-center gap-2"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>
+                                            Dashboard
+                                        </Link>
+                                    )}
+                                    <button
+                                        onClick={handleLogout}
+                                        className="text-2xl font-bold text-red-500/80 hover:text-red-500 transition-colors text-left flex items-center gap-2"
+                                    >
+                                        {t.nav.logout || "Log out"}
+                                    </button>
+                                </div>
                             )}
                             <button
                                 onClick={toggleLanguage}

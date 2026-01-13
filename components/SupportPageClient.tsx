@@ -14,7 +14,7 @@ type ProcessItem = {
     id: string;
     name: string;
     unit: 'sheet' | 'row';
-    cycleTime: number;
+    cycleTime: number | string;
     machines: number;
 };
 
@@ -35,7 +35,13 @@ export default function SupportPageClient({
     }, [searchParams]);
 
     // Calculator State
-    const [calcConfig, setCalcConfig] = useState({
+    const [calcConfig, setCalcConfig] = useState<{
+        workHours: number | string;
+        workDays: number | string;
+        efficiency: number | string;
+        rowsPerSheet: number | string;
+        yearlyTarget: number | string;
+    }>({
         workHours: 8,
         workDays: 20,
         efficiency: 85,
@@ -61,6 +67,16 @@ export default function SupportPageClient({
     // Handle Config Change
     const handleConfigChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+
+        // Allow empty string to let user delete content
+        if (value === "") {
+            setCalcConfig(prev => ({
+                ...prev,
+                [name]: ""
+            }));
+            return;
+        }
+
         setCalcConfig(prev => ({
             ...prev,
             [name]: Math.max(0, Number(value))
@@ -68,23 +84,42 @@ export default function SupportPageClient({
     };
 
     // Handle Process Change
-    const updateProcess = (id: string, field: 'cycleTime' | 'machines', value: number) => {
-        setProcesses(prev => prev.map(p =>
-            p.id === id ? { ...p, [field]: Math.max(1, value) } : p
-        ));
+    const updateProcess = (id: string, field: 'cycleTime' | 'machines', value: string | number) => {
+        setProcesses(prev => prev.map(p => {
+            if (p.id !== id) return p;
+
+            if (value === "") {
+                return { ...p, [field]: "" };
+            }
+
+            const numValue = Number(value);
+            // Allow 0 temporarily while typing, but calculations will handle it
+            return { ...p, [field]: numValue };
+        }));
     };
 
+    // Stats Calculation
     // Stats Calculation
     const getStats = () => {
         let maxEffectiveCycleTime = 0;
         let bottleneckProcess = '';
 
+        // Safe accessors
+        const rowsPerSheet = Number(calcConfig.rowsPerSheet) || 0;
+        const workHours = Number(calcConfig.workHours) || 0;
+        const workDays = Number(calcConfig.workDays) || 0;
+        const efficiency = Number(calcConfig.efficiency) || 0;
+        const yearlyTarget = Number(calcConfig.yearlyTarget) || 0;
+
         const processedData = processes.map(p => {
             let effectiveCT = 0;
+            const cycleTime = Number(p.cycleTime) || 0;
+            const machines = Number(p.machines) || 1; // Prevent division by zero
+
             if (p.unit === 'sheet') {
-                effectiveCT = p.cycleTime / p.machines;
+                effectiveCT = cycleTime / machines;
             } else {
-                effectiveCT = (p.cycleTime * calcConfig.rowsPerSheet) / p.machines;
+                effectiveCT = (cycleTime * rowsPerSheet) / machines;
             }
 
             if (effectiveCT > maxEffectiveCycleTime) {
@@ -97,12 +132,12 @@ export default function SupportPageClient({
 
         const lineTactTime = maxEffectiveCycleTime;
         const sheetsPerHour = lineTactTime > 0 ? 3600 / lineTactTime : 0;
-        const sheetsPerDay = sheetsPerHour * calcConfig.workHours * (calcConfig.efficiency / 100);
-        const sheetsPerMonth = sheetsPerDay * calcConfig.workDays;
+        const sheetsPerDay = sheetsPerHour * workHours * (efficiency / 100);
+        const sheetsPerMonth = sheetsPerDay * workDays;
         const sheetsPerYear = sheetsPerMonth * 12;
-        const bottlesPerYear = sheetsPerYear * calcConfig.rowsPerSheet;
+        const bottlesPerYear = sheetsPerYear * rowsPerSheet;
 
-        const isTargetMet = bottlesPerYear >= (calcConfig.yearlyTarget * 1000000);
+        const isTargetMet = bottlesPerYear >= (yearlyTarget * 1000000);
 
         return {
             processedData,
@@ -536,7 +571,7 @@ export default function SupportPageClient({
                                                             <input
                                                                 type="number"
                                                                 value={p.cycleTime}
-                                                                onChange={(e) => updateProcess(p.id, 'cycleTime', Number(e.target.value))}
+                                                                onChange={(e) => updateProcess(p.id, 'cycleTime', e.target.value)}
                                                                 className="w-16 bg-black/20 border border-white/10 rounded text-center py-1 text-sm"
                                                             />
                                                         </div>
@@ -597,7 +632,7 @@ export default function SupportPageClient({
                                                         {Math.floor(stats.capacity.yearly).toLocaleString()} <span className="text-sm font-normal text-white/40">sheets</span>
                                                     </div>
                                                     <div className={`font-mono text-sm mt-1 flex items-center gap-2 ${stats.isTargetMet ? 'text-green-400/60' : 'text-white/40'}`}>
-                                                        ≈ {Math.floor(stats.capacity.yearly * calcConfig.rowsPerSheet).toLocaleString()} bottles
+                                                        ≈ {Math.floor(stats.capacity.yearly * (Number(calcConfig.rowsPerSheet) || 0)).toLocaleString()} bottles
                                                         {stats.isTargetMet && (
                                                             <span className="text-[10px] uppercase border border-green-500/30 px-1 rounded bg-green-500/10">Goal Reached</span>
                                                         )}

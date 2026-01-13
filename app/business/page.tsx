@@ -38,8 +38,8 @@ export default function BusinessPage() {
                         {t.business_page.hero.subtitle}
                     </motion.p>
                 </div>
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050505]/50 to-[#050505]" />
+                {/* Overlay gradient - Darker on mobile for better text visibility against video/images */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-[#050505]/60 to-[#050505] md:from-transparent md:via-[#050505]/50" />
             </section>
 
             {/* PROCESS SECTION MOVED FROM ABOUT PAGE */}
@@ -53,7 +53,7 @@ export default function BusinessPage() {
                 >
                     <div className="mb-16 text-center">
                         <h2 className="text-3xl md:text-5xl font-bold mb-4">{t.business_page.process.title}</h2>
-                        <p className="text-white/60 text-lg">{t.business_page.process.subtitle}</p>
+                        <p className="text-white/80 md:text-white/60 text-lg">{t.business_page.process.subtitle}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -65,7 +65,7 @@ export default function BusinessPage() {
                                         {idx + 1}
                                     </div>
                                     <h3 className="text-xl font-bold mb-2">{step.title}</h3>
-                                    <p className="text-sm text-white/50">{step.desc}</p>
+                                    <p className="text-sm text-white/70 md:text-white/50">{step.desc}</p>
                                 </div>
                                 {/* Connector Line (Desktop) */}
                                 {idx < 4 && (
@@ -77,9 +77,7 @@ export default function BusinessPage() {
                 </motion.div>
             </section>
 
-            {/* AREAS SECTION */
-                /* Using a single section container but adding scroll-mt to children for navigation */
-            }
+            {/* AREAS SECTION */}
             <section className="py-24 px-6 md:px-12 bg-[#0A0A0C] border-t border-white/10">
                 <div className="max-w-7xl mx-auto space-y-32">
                     {t.business_page.areas.map((area, idx) => (
@@ -99,14 +97,14 @@ export default function BusinessPage() {
                                         0{idx + 1}
                                     </span>
                                     <h3 className="text-3xl md:text-4xl font-bold">{area.title}</h3>
-                                    <p className="text-xl text-white/50">{area.subtitle}</p>
+                                    <p className="text-xl text-white/70 md:text-white/50">{area.subtitle}</p>
                                 </div>
-                                <p className="text-lg text-white/80 leading-relaxed break-keep">
+                                <p className="text-lg text-white/90 md:text-white/80 leading-relaxed break-keep">
                                     {area.desc}
                                 </p>
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
                                     {area.features.map((feature, fIdx) => (
-                                        <li key={fIdx} className="flex items-center gap-3 text-white/70">
+                                        <li key={fIdx} className="flex items-center gap-3 text-white/80 md:text-white/70">
                                             <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                                             {feature}
                                         </li>
@@ -114,14 +112,12 @@ export default function BusinessPage() {
                                 </ul>
                             </div>
 
-                            {/* Visual Placeholder / Mockup */}
                             {/* Visual Placeholder / Image */}
                             <div className="flex-1 w-full aspect-video rounded-2xl bg-white/5 border border-white/10 relative overflow-hidden group">
                                 {/* Fallback Gradient (visible if image fails or while loading) */}
                                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-50 z-0" />
 
                                 {/* Image */}
-                                {/* Ensure you place images in public/images/business/ named exactly as the ID (e.g., bgms.png, ivd.png) */}
                                 <img
                                     src={BUSINESS_IMAGES[area.id as keyof typeof BUSINESS_IMAGES] || `/images/business/${area.id}.png`}
                                     alt={area.title}
