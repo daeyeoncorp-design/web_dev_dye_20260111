@@ -138,7 +138,7 @@ export default function AboutPage() {
                     </motion.h2>
 
                     <div className="relative ml-3 md:ml-0 space-y-12">
-                        {t.about_page.history.items.map((item, idx) => (
+                        {[...t.about_page.history.items].reverse().map((item, idx) => (
                             <motion.div
                                 key={idx}
                                 className="relative pl-8 md:pl-12"
@@ -156,7 +156,7 @@ export default function AboutPage() {
                                     </span>
                                     <div className="space-y-2 pt-1">
                                         {item.events.map((event, eIdx) => (
-                                            <p key={eIdx} className="text-lg md:text-xl text-white/90">
+                                            <p key={eIdx} className="text-lg md:text-xl text-white/90 break-keep">
                                                 {event}
                                             </p>
                                         ))}
