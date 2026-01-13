@@ -62,7 +62,7 @@ export default function Navbar() {
             label: t.nav.support,
             href: "/support",
             subItems: t.nav.sub_support.map((label, idx) => {
-                const query = ["?tab=resources", "?tab=contact", "?tab=location"];
+                const query = ["?tab=tact_time", "?tab=resources", "?tab=contact", "?tab=location"];
                 return { label, href: `/support${query[idx] || ""}` };
             })
         }

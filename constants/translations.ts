@@ -15,7 +15,7 @@ export const TRANSLATIONS = {
             sub_about: ["About US", "History", "Vision"],
             sub_business: ["BGMS Automation", "Test Kit Automation", "Precise Tooling & Etc"],
             sub_products: ["A", "B", "C", "D", "E", "F"],
-            sub_support: ["Download", "Get Help", "Visit US"],
+            sub_support: ["Tact Time Calc", "Download", "Get Help", "Visit US"],
         },
         hero: {
             title: "DAEYEON ENG",
@@ -24,8 +24,8 @@ export const TRANSLATIONS = {
         },
         accuracy: {
             title: "Where Accuracy Meets Automation.",
-            desc1: "Custom drivers, sealed acoustic chambers, and optimized airflow deliver studio-grade clarity.",
-            desc2: "Every component is tuned for balance, power, and comfort—hour after hour.",
+            desc1: "From high-precision tooling to fully automated assembly lines, we deliver engineering solutions that redefine efficiency.",
+            desc2: "Our integrated systems ensure zero-defect quality and maximum throughput, tailored to your specific manufacturing needs.",
         },
         empower: {
             title: "Empowering Manufacturers",
@@ -36,16 +36,12 @@ export const TRANSLATIONS = {
             intro_head: "Get to know ",
             intro_tail: ".",
             header_desc: "Explore our state-of-the-art manufacturing capabilities.",
-            title1: "Precision Tooling",
-            desc1: "High-grade alloy machining.",
-            title2: "Automated Assembly",
-            desc2: "Robotics for high-volume production.",
-            title3: "Quality Control",
-            desc3: "AI-powered defect detection.",
-            title4: "R&D Prototyping",
-            desc4: "Rapid iteration and testing.",
-            title5: "Global Logistics",
-            desc5: "Worldwide supply chain integration.",
+            title1: "BGMS Automation",
+            desc1: "Full automated manufacturing lines for blood glucose strips.",
+            title2: "IVD Test Kit Automation",
+            desc2: "Automated assembly for rapid test kits.",
+            title3: "Precise Tooling & Equipment",
+            desc3: "Design and fabrication of high-precision molds and jigs.",
         },
         about_page: {
             hero: {
@@ -202,6 +198,7 @@ export const TRANSLATIONS = {
                 resources: "Resources",
                 contact: "Contact",
                 location: "Location",
+                tact_time: "Tact Time",
             },
             resources: {
                 manuals: "User Manuals",
@@ -229,6 +226,34 @@ export const TRANSLATIONS = {
             location: {
                 title: "Visit Us",
                 address: "135-11, Dangha-ro, Namsa-eup, Cheoin-gu, Yongin-si, Gyeonggi-do, Korea",
+            },
+            tact_calc: {
+                title: "Tact Time Calculator",
+                inputs: {
+                    hours_day: "Working Hours / Day",
+                    days_month: "Working Days / Month",
+                    efficiency: "Efficiency (%)",
+                    rows_sheet: "Rows / Sheet",
+                    target: "Target/ Year",
+                },
+                table: {
+                    process: "Process",
+                    unit: "Unit",
+                    cycle_time: "Cycle (sec)",
+                    machines: "Machines",
+                    effective: "Effective CT (sec)",
+                },
+                summary: {
+                    title: "Production Capacity",
+                    tact: "Line Tact Time",
+                    hourly: "Hourly Output",
+                    daily: "Daily Output",
+                    monthly: "Monthly Output",
+                    yearly: "Yearly Output",
+                    bottleneck: "Bottleneck Process",
+                    units_sheet: "Sheets",
+                    units_bottle: "Bottles",
+                }
             }
         }
     },
@@ -247,8 +272,8 @@ export const TRANSLATIONS = {
             logout: "로그아웃",
             sub_about: ["기업 소개", "연혁", "비전"],
             sub_business: ["BGMS 자동화", "진단 키트 자동화", "정밀 가공 및 기타"],
-            sub_products: ["A", "B", "C", "D", "E", "F"],
-            sub_support: ["자료실", "문의하기", "오시는 길"],
+            sub_products: [],
+            sub_support: ["자료실", "문의하기", "오시는 길", "Tact계산기"],
         },
         hero: {
             title: "DAEYEON ENG",
@@ -256,9 +281,9 @@ export const TRANSLATIONS = {
             tagline: "신뢰할 수 있는 품질, 그 이상의 가치.",
         },
         accuracy: {
-            title: "정밀 기술과 자동화의 완벽한 결합.",
-            desc1: "커스텀 드라이버와 밀폐형 음향 챔버, 최적화된 에어플로우가 스튜디오급 선명함을 선사합니다.",
-            desc2: "모든 부품은 완벽한 균형과 강력한 성능, 그리고 지속적인 편안함을 위해 정밀 튜닝되었습니다.",
+            title: "정밀 기술과 자동화의\n완벽한 결합.",
+            desc1: "초정밀 금형 가공부터 완전 자동화 조립 라인까지, 생산 효율을 재정의하는 엔지니어링 솔루션을 제공합니다.",
+            desc2: "대연의 통합 시스템은 무결점 품질과 최대 생산성을 보장하며, 고객의 제조 환경에 최적화된 맞춤형 설비를 구현합니다.",
         },
         empower: {
             title: "제조 혁신의 파트너",
@@ -268,16 +293,12 @@ export const TRANSLATIONS = {
             intro_head: "",
             intro_tail: "을 만나보세요.",
             header_desc: "최첨단 제조 설비와 기술력을 확인하세요.",
-            title1: "정밀 금형 기술",
-            desc1: "최고급 합금 가공 솔루션.",
-            title2: "자동화 조립 공정",
-            desc2: "대량 생산을 위한 첨단 로보틱스.",
-            title3: "품질 관리 시스템",
-            desc3: "AI 기반 결함 검출 기술.",
-            title4: "R&D 프로토타이핑",
-            desc4: "빠른 설계 검증 및 테스트.",
-            title5: "글로벌 물류망",
-            desc5: "전 세계 공급망 통합 관리.",
+            title1: "BGMS 자동화",
+            desc1: "혈당 스트립 제조를 위한 완전 자동화 라인.",
+            title2: "진단 키트 자동화",
+            desc2: "신속 진단 키트 조립을 위한 자동화 시스템.",
+            title3: "정밀 가공 및 설비",
+            desc3: "고정밀 금형, 지그 및 전용기 설계 제작.",
         },
         about_page: {
             hero: {
@@ -434,6 +455,7 @@ export const TRANSLATIONS = {
                 resources: "자료실",
                 contact: "문의하기",
                 location: "오시는 길",
+                tact_time: "택트 타임 계산기",
             },
             resources: {
                 manuals: "사용자 매뉴얼",
@@ -461,6 +483,34 @@ export const TRANSLATIONS = {
             location: {
                 title: "오시는 길",
                 address: "경기도 용인시 처인구 남사읍 당하로 135-11",
+            },
+            tact_calc: {
+                title: "택트 타임 계산기",
+                inputs: {
+                    hours_day: "일일 근무 시간",
+                    days_month: "월 근무 일수",
+                    efficiency: "효율 (%)",
+                    rows_sheet: "Rows / Sheet",
+                    target: "연간 목표생산량",
+                },
+                table: {
+                    process: "공정",
+                    unit: "단위",
+                    cycle_time: "사이클 (초)",
+                    machines: "장비 수",
+                    effective: "유효 CT (초)",
+                },
+                summary: {
+                    title: "생산 Capacity",
+                    tact: "라인 택트 타임",
+                    hourly: "시간당 생산량",
+                    daily: "일일 생산량",
+                    monthly: "월간 생산량",
+                    yearly: "연간 생산량",
+                    bottleneck: "병목 공정",
+                    units_sheet: "Sheets",
+                    units_bottle: "Bottles",
+                }
             }
         }
     }

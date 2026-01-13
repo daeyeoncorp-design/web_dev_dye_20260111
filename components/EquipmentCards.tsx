@@ -3,16 +3,15 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { BUSINESS_IMAGES } from "@/constants/images";
 
 export default function EquipmentCards() {
     const { t } = useLanguage();
 
     const cards = [
-        { id: 1, title: t.cards.title1, subtitle: t.cards.desc1, image: "/assets/row1.png", colSpan: "col-span-1 md:col-span-2" },
-        { id: 2, title: t.cards.title2, subtitle: t.cards.desc2, image: "/assets/row2.png", colSpan: "col-span-1" },
-        { id: 3, title: t.cards.title3, subtitle: t.cards.desc3, image: "/assets/row3.png", colSpan: "col-span-1" },
-        { id: 4, title: t.cards.title4, subtitle: t.cards.desc4, image: "/assets/row4.png", colSpan: "col-span-1 md:col-span-2" },
-        { id: 5, title: t.cards.title5, subtitle: t.cards.desc5, image: "/assets/row5.png", colSpan: "col-span-1 md:col-span-3" },
+        { id: 1, title: t.cards.title1, subtitle: t.cards.desc1, image: BUSINESS_IMAGES.bgms },
+        { id: 2, title: t.cards.title2, subtitle: t.cards.desc2, image: BUSINESS_IMAGES.ivd },
+        { id: 3, title: t.cards.title3, subtitle: t.cards.desc3, image: BUSINESS_IMAGES.tooling },
     ];
 
     return (
@@ -32,11 +31,11 @@ export default function EquipmentCards() {
                 </p>
             </motion.div>
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-6">
                 {cards.map((card) => (
                     <motion.div
                         key={card.id}
-                        className={`relative group overflow-hidden rounded-3xl bg-[#0A0A0C] border border-white/5 h-[400px] md:h-[500px] ${card.colSpan}`}
+                        className="relative group overflow-hidden rounded-3xl bg-[#0A0A0C] border border-white/5 h-[400px] w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]"
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-10%" }}
@@ -59,7 +58,7 @@ export default function EquipmentCards() {
                             <p className="text-blue-400 font-medium text-sm mb-2 uppercase tracking-wider">
                                 {card.subtitle}
                             </p>
-                            <h3 className="text-3xl font-bold text-white group-hover:text-blue-100 transition-colors">
+                            <h3 className="text-2xl font-bold text-white group-hover:text-blue-100 transition-colors">
                                 {card.title}
                             </h3>
                         </div>

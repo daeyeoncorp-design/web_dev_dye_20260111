@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import ImageSequence from "@/components/ImageSequence";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { BUSINESS_IMAGES } from "@/constants/images";
 
 export default function BusinessPage() {
     const { t } = useLanguage();
@@ -100,7 +101,7 @@ export default function BusinessPage() {
                                     <h3 className="text-3xl md:text-4xl font-bold">{area.title}</h3>
                                     <p className="text-xl text-white/50">{area.subtitle}</p>
                                 </div>
-                                <p className="text-lg text-white/80 leading-relaxed">
+                                <p className="text-lg text-white/80 leading-relaxed break-keep">
                                     {area.desc}
                                 </p>
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
@@ -122,9 +123,9 @@ export default function BusinessPage() {
                                 {/* Image */}
                                 {/* Ensure you place images in public/images/business/ named exactly as the ID (e.g., bgms.png, ivd.png) */}
                                 <img
-                                    src={`/images/business/${area.id}.png`} // Using simple img tag for easy local dev testing without specific width/height. Change to next/image for production.
+                                    src={BUSINESS_IMAGES[area.id as keyof typeof BUSINESS_IMAGES] || `/images/business/${area.id}.png`}
                                     alt={area.title}
-                                    className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 z-10 mix-blend-overlay"
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 z-10"
                                     onError={(e) => {
                                         // Hide broken image icon if file doesn't exist yet
                                         e.currentTarget.style.display = 'none';
@@ -132,14 +133,7 @@ export default function BusinessPage() {
                                 />
 
                                 {/* Hover Effect */}
-                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.3)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl z-20 pointer-events-none" />
-
-                                {/* Placeholder Text (visible if image is missing/hidden) */}
-                                <div className="absolute inset-0 flex items-center justify-center z-0">
-                                    <span className="text-white/20 font-bold text-6xl uppercase tracking-widest rotate-[-15deg]">
-                                        {area.id}
-                                    </span>
-                                </div>
+                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-20 pointer-events-none" />
                             </div>
                         </motion.div>
                     ))}

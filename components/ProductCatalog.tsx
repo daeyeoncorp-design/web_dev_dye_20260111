@@ -22,6 +22,7 @@ export default function ProductCatalog({
     const [activeCategory, setActiveCategory] = useState<string>("all");
     const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const [activeImage, setActiveImage] = useState<string>("");
 
     useEffect(() => {
         if (initialSlug) {
@@ -101,7 +102,10 @@ export default function ProductCatalog({
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.3 }}
                                     key={product.id}
-                                    onClick={() => setSelectedProduct(product)}
+                                    onClick={() => {
+                                        setSelectedProduct(product);
+                                        setActiveImage(product.image_url || "");
+                                    }}
                                     className="group bg-[#111] border border-white/5 rounded-2xl overflow-hidden hover:border-white/20 transition-all hover:shadow-2xl hover:shadow-blue-500/10 flex flex-col cursor-pointer"
                                 >
                                     <div className="aspect-[4/3] bg-[#0a0a0a] relative overflow-hidden">
@@ -174,16 +178,34 @@ export default function ProductCatalog({
                                 </button>
 
                                 {/* Image Section */}
-                                <div className="w-full md:w-1/2 bg-black aspect-square md:aspect-auto relative">
-                                    {selectedProduct.image_url ? (
-                                        <img
-                                            src={selectedProduct.image_url}
-                                            alt={selectedProduct.name}
-                                            className="w-full h-full object-contain p-4"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <span className="text-white/20">No Image</span>
+                                <div className="w-full md:w-1/2 bg-black flex flex-col">
+                                    {/* Main Image */}
+                                    <div className="flex-1 relative bg-black/50 overflow-hidden group/main-img">
+                                        {activeImage ? (
+                                            <img
+                                                src={activeImage}
+                                                alt={selectedProduct.name}
+                                                className="w-full h-full object-contain p-4"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <span className="text-white/20">No Image</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Thumbnails */}
+                                    {selectedProduct.gallery_images && selectedProduct.gallery_images.length > 1 && (
+                                        <div className="h-20 border-t border-white/10 p-2 flex gap-2 overflow-x-auto custom-scrollbar bg-[#0a0a0a]">
+                                            {selectedProduct.gallery_images.map((img, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => setActiveImage(img)}
+                                                    className={`relative aspect-square h-full rounded overflow-hidden border-2 transition-all flex-shrink-0 ${activeImage === img ? 'border-blue-500 opacity-100' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                                                >
+                                                    <img src={img} alt="" className="w-full h-full object-cover" />
+                                                </button>
+                                            ))}
                                         </div>
                                     )}
                                 </div>

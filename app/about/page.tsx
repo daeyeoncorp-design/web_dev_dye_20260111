@@ -55,7 +55,7 @@ export default function AboutPage() {
                             {t.about_page.overview.title}
                         </h2>
                         <div className="space-y-6 text-lg text-white/80 leading-relaxed">
-                            <p>{t.about_page.overview.desc}</p>
+                            <p className="break-keep">{t.about_page.overview.desc}</p>
 
                             <div className="grid grid-cols-[1fr_3fr] gap-6 pt-6 border-t border-white/10">
                                 <div>

@@ -10,6 +10,14 @@ import { useSearchParams } from "next/navigation";
 
 type Resource = Tables<"resources">;
 
+type ProcessItem = {
+    id: string;
+    name: string;
+    unit: 'sheet' | 'row';
+    cycleTime: number;
+    machines: number;
+};
+
 export default function SupportPageClient({
     resources
 }: {
@@ -17,17 +25,100 @@ export default function SupportPageClient({
 }) {
     const { t } = useLanguage();
     const searchParams = useSearchParams();
-    const [activeTab, setActiveTab] = useState<'resources' | 'contact' | 'location'>('resources');
+    const [activeTab, setActiveTab] = useState<'resources' | 'contact' | 'location' | 'tact_time'>('tact_time');
 
     useEffect(() => {
         const tab = searchParams.get("tab");
-        if (tab === "contact" || tab === "location" || tab === "resources") {
+        if (tab === "contact" || tab === "location" || tab === "resources" || tab === "tact_time") {
             setActiveTab(tab);
         }
     }, [searchParams]);
 
+    // Calculator State
+    const [calcConfig, setCalcConfig] = useState({
+        workHours: 8,
+        workDays: 20,
+        efficiency: 85,
+        rowsPerSheet: 12,
+        yearlyTarget: 3
+    });
+
+    const [processes, setProcesses] = useState<ProcessItem[]>([
+        { id: 'p1', name: 'Screen Printing', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p2', name: 'Laminating 1', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p3', name: 'Dispensing', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p4', name: 'Drying', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p5', name: 'Laminating 2', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p6', name: 'Row Slitting', unit: 'sheet', cycleTime: 20, machines: 1 },
+        { id: 'p7', name: 'Cell Slitting', unit: 'row', cycleTime: 7, machines: 4 },
+        { id: 'p8', name: 'Capping', unit: 'row', cycleTime: 3.5, machines: 2 },
+        { id: 'p9', name: 'Cartoning', unit: 'row', cycleTime: 1.5, machines: 1 },
+    ]);
+
     // Filter resources by type for better organization if needed, or just list all
     // For this design, let's group them or just list them. The design had separate icons.
+
+    // Handle Config Change
+    const handleConfigChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setCalcConfig(prev => ({
+            ...prev,
+            [name]: Math.max(0, Number(value))
+        }));
+    };
+
+    // Handle Process Change
+    const updateProcess = (id: string, field: 'cycleTime' | 'machines', value: number) => {
+        setProcesses(prev => prev.map(p =>
+            p.id === id ? { ...p, [field]: Math.max(1, value) } : p
+        ));
+    };
+
+    // Stats Calculation
+    const getStats = () => {
+        let maxEffectiveCycleTime = 0;
+        let bottleneckProcess = '';
+
+        const processedData = processes.map(p => {
+            let effectiveCT = 0;
+            if (p.unit === 'sheet') {
+                effectiveCT = p.cycleTime / p.machines;
+            } else {
+                effectiveCT = (p.cycleTime * calcConfig.rowsPerSheet) / p.machines;
+            }
+
+            if (effectiveCT > maxEffectiveCycleTime) {
+                maxEffectiveCycleTime = effectiveCT;
+                bottleneckProcess = p.name;
+            }
+
+            return { ...p, effectiveCT };
+        });
+
+        const lineTactTime = maxEffectiveCycleTime;
+        const sheetsPerHour = lineTactTime > 0 ? 3600 / lineTactTime : 0;
+        const sheetsPerDay = sheetsPerHour * calcConfig.workHours * (calcConfig.efficiency / 100);
+        const sheetsPerMonth = sheetsPerDay * calcConfig.workDays;
+        const sheetsPerYear = sheetsPerMonth * 12;
+        const bottlesPerYear = sheetsPerYear * calcConfig.rowsPerSheet;
+
+        const isTargetMet = bottlesPerYear >= (calcConfig.yearlyTarget * 1000000);
+
+        return {
+            processedData,
+            lineTactTime,
+            bottleneckProcess,
+            capacity: {
+                hourly: sheetsPerHour,
+                daily: sheetsPerDay,
+                monthly: sheetsPerMonth,
+                yearly: sheetsPerYear
+            },
+            isTargetMet
+        };
+    };
+
+    const stats = getStats();
 
     const getResourceIcon = (type: string) => {
         if (type === 'brochure') return (
@@ -43,6 +134,11 @@ export default function SupportPageClient({
     };
 
     const tabs = [
+        {
+            id: 'tact_time', label: t.support_page.tabs.tact_time, icon: (
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" x2="16" y1="6" y2="6"></line><line x1="16" x2="16" y1="14" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+            )
+        },
         {
             id: 'resources', label: t.support_page.tabs.resources, icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
@@ -349,6 +445,167 @@ export default function SupportPageClient({
                                     >
                                         Open in Maps
                                     </a>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'tact_time' && (
+                        <motion.div
+                            key="tact_time"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            className="max-w-6xl mx-auto"
+                        >
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                {/* Configuration Panel */}
+                                <div className="lg:col-span-2 space-y-6">
+                                    {/* Global Settings */}
+                                    <div className="bg-[#111] border border-white/5 rounded-2xl p-6">
+                                        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                            Settings
+                                        </h3>
+                                        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                                            <div>
+                                                <label className="block text-xs text-white/40 mb-1">{t.support_page.tact_calc.inputs.hours_day}</label>
+                                                <div className="relative">
+                                                    <input type="number" name="workHours" value={calcConfig.workHours} onChange={handleConfigChange} className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-8 py-2 text-sm" />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 font-bold text-xs">hr</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-white/40 mb-1">{t.support_page.tact_calc.inputs.days_month}</label>
+                                                <div className="relative">
+                                                    <input type="number" name="workDays" value={calcConfig.workDays} onChange={handleConfigChange} className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-10 py-2 text-sm" />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 font-bold text-xs">days</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-white/40 mb-1">{t.support_page.tact_calc.inputs.efficiency}</label>
+                                                <div className="relative">
+                                                    <input type="number" name="efficiency" value={calcConfig.efficiency} onChange={handleConfigChange} className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-8 py-2 text-sm" />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 font-bold text-xs">%</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-white/40 mb-1">{t.support_page.tact_calc.inputs.rows_sheet}</label>
+                                                <div className="relative">
+                                                    <input type="number" name="rowsPerSheet" value={calcConfig.rowsPerSheet} onChange={handleConfigChange} className="w-full bg-white/5 border border-white/10 rounded-lg pl-3 pr-10 py-2 text-sm" />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 font-bold text-xs">rows</span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-green-400 mb-1">{t.support_page.tact_calc.inputs.target}</label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="number"
+                                                        step="0.1"
+                                                        name="yearlyTarget"
+                                                        value={calcConfig.yearlyTarget}
+                                                        onChange={handleConfigChange}
+                                                        className="w-full bg-green-900/10 border border-green-500/20 text-green-400 font-bold rounded-lg pl-3 pr-8 py-2 text-sm"
+                                                    />
+                                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-400/70 font-bold text-sm">M</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Process List */}
+                                    <div className="bg-[#111] border border-white/5 rounded-2xl overflow-hidden">
+                                        <div className="grid grid-cols-12 gap-2 p-4 border-b border-white/10 text-xs uppercase font-bold text-white/40">
+                                            <div className="col-span-4 md:col-span-3">{t.support_page.tact_calc.table.process}</div>
+                                            <div className="col-span-2 hidden md:block">{t.support_page.tact_calc.table.unit}</div>
+                                            <div className="col-span-3 md:col-span-2 text-center">{t.support_page.tact_calc.table.cycle_time}</div>
+                                            <div className="col-span-3 md:col-span-3 text-center">{t.support_page.tact_calc.table.machines}</div>
+                                            <div className="col-span-2 text-right hidden md:block text-blue-400">{t.support_page.tact_calc.table.effective}</div>
+                                        </div>
+                                        <div className="divide-y divide-white/5">
+                                            {stats.processedData.map((p) => {
+                                                const isBottleneck = p.name === stats.bottleneckProcess && !stats.isTargetMet;
+                                                return (
+                                                    <div key={p.id} className={`grid grid-cols-12 gap-2 p-4 items-center hover:bg-white/5 transition-colors ${isBottleneck ? 'bg-red-500/10' : ''}`}>
+                                                        <div className="col-span-4 md:col-span-3 font-medium text-sm flex items-center gap-2">
+                                                            {isBottleneck && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>}
+                                                            {p.name}
+                                                        </div>
+                                                        <div className="col-span-2 hidden md:block text-xs text-white/40 uppercase">{p.unit}</div>
+                                                        <div className="col-span-3 md:col-span-2 flex justify-center">
+                                                            <input
+                                                                type="number"
+                                                                value={p.cycleTime}
+                                                                onChange={(e) => updateProcess(p.id, 'cycleTime', Number(e.target.value))}
+                                                                className="w-16 bg-black/20 border border-white/10 rounded text-center py-1 text-sm"
+                                                            />
+                                                        </div>
+                                                        <div className="col-span-3 md:col-span-3 flex justify-center items-center gap-2">
+                                                            <button onClick={() => updateProcess(p.id, 'machines', p.machines - 1)} className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center">-</button>
+                                                            <span className="w-8 text-center">{p.machines}</span>
+                                                            <button onClick={() => updateProcess(p.id, 'machines', p.machines + 1)} className="w-6 h-6 rounded bg-white/10 hover:bg-white/20 flex items-center justify-center">+</button>
+                                                        </div>
+                                                        <div className={`col-span-2 text-right hidden md:block font-mono text-sm ${isBottleneck ? 'text-red-400 font-bold' : 'text-blue-400/60'}`}>
+                                                            {p.effectiveCT.toFixed(1)}s
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Summary Panel */}
+                                <div className="lg:col-span-1">
+                                    <div className={`bg-gradient-to-br border border-white/10 rounded-2xl p-6 sticky top-24 ${stats.isTargetMet ? 'from-green-900/20 to-blue-900/20 border-green-500/30' : 'from-blue-900/20 to-purple-900/20'}`}>
+                                        <h3 className="text-xl font-bold mb-6">{t.support_page.tact_calc.summary.title}</h3>
+
+                                        <div className="space-y-6">
+                                            <div className="bg-black/20 p-4 rounded-xl border border-white/5">
+                                                <p className="text-sm text-white/60 mb-1">{t.support_page.tact_calc.summary.tact}</p>
+                                                <p className="text-3xl font-bold text-white">{stats.lineTactTime.toFixed(1)} <span className="text-sm font-normal text-white/40">sec/sheet</span></p>
+                                                {!stats.isTargetMet && (
+                                                    <p className="text-xs text-red-400 mt-2 flex items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg>
+                                                        {t.support_page.tact_calc.summary.bottleneck}: {stats.bottleneckProcess}
+                                                    </p>
+                                                )}
+                                                {stats.isTargetMet && (
+                                                    <p className="text-xs text-green-400 mt-2 flex items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                                        Target Met!
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="space-y-3">
+                                                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                                                    <span className="text-white/60">{t.support_page.tact_calc.summary.hourly}</span>
+                                                    <span className="font-mono">{Math.floor(stats.capacity.hourly).toLocaleString()} <span className="text-xs text-white/30">sheets</span></span>
+                                                </div>
+                                                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                                                    <span className="text-white/60">{t.support_page.tact_calc.summary.daily}</span>
+                                                    <span className="font-mono font-bold text-blue-300">{Math.floor(stats.capacity.daily).toLocaleString()} <span className="text-xs text-white/30">sheets</span></span>
+                                                </div>
+                                                <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                                                    <span className="text-white/60">{t.support_page.tact_calc.summary.monthly}</span>
+                                                    <span className="font-mono">{Math.floor(stats.capacity.monthly).toLocaleString()} <span className="text-xs text-white/30">sheets</span></span>
+                                                </div>
+                                                <div className="pt-2">
+                                                    <span className="block text-white/60 text-sm mb-1">{t.support_page.tact_calc.summary.yearly}</span>
+                                                    <div className={`font-mono text-2xl font-bold ${stats.isTargetMet ? 'text-green-400' : 'text-yellow-400'}`}>
+                                                        {Math.floor(stats.capacity.yearly).toLocaleString()} <span className="text-sm font-normal text-white/40">sheets</span>
+                                                    </div>
+                                                    <div className={`font-mono text-sm mt-1 flex items-center gap-2 ${stats.isTargetMet ? 'text-green-400/60' : 'text-white/40'}`}>
+                                                        ≈ {Math.floor(stats.capacity.yearly * calcConfig.rowsPerSheet).toLocaleString()} bottles
+                                                        {stats.isTargetMet && (
+                                                            <span className="text-[10px] uppercase border border-green-500/30 px-1 rounded bg-green-500/10">Goal Reached</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

@@ -57,6 +57,7 @@ export default function ProductManager({
     const [subtitle, setSubtitle] = useState("");
     const [categoryId, setCategoryId] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [galleryImages, setGalleryImages] = useState<string[]>([]);
     const [details, setDetails] = useState("");
     const [features, setFeatures] = useState<string[]>([]);
     const [tags, setTags] = useState<string[]>([]);
@@ -71,6 +72,7 @@ export default function ProductManager({
         setSubtitle("");
         setCategoryId(categories[0]?.id || "");
         setImageUrl("");
+        setGalleryImages([]);
         setDetails("");
         setFeatures([]);
         setTags([]);
@@ -84,6 +86,7 @@ export default function ProductManager({
         setSubtitle(product.subtitle || "");
         setCategoryId(product.category_id || "");
         setImageUrl(product.image_url || "");
+        setGalleryImages(product.gallery_images || (product.image_url ? [product.image_url] : []));
         setDetails(product.details || "");
         setFeatures(product.features || []);
         setTags(product.tags || []);
@@ -98,28 +101,42 @@ export default function ProductManager({
         if (!e.target.files || e.target.files.length === 0) return;
 
         setIsLoading(true);
-        const file = e.target.files[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
-        const filePath = `${fileName}`;
+        const files = Array.from(e.target.files);
+        const newImages: string[] = [];
 
         try {
-            const { error: uploadError } = await supabase.storage
-                .from('product-images')
-                .upload(filePath, file);
+            for (const file of files) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Math.random()}.${fileExt}`;
+                const filePath = `${fileName}`;
 
-            if (uploadError) throw uploadError;
+                const { error: uploadError } = await supabase.storage
+                    .from('product-images')
+                    .upload(filePath, file);
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('product-images')
-                .getPublicUrl(filePath);
+                if (uploadError) throw uploadError;
 
-            setImageUrl(publicUrl);
+                const { data: { publicUrl } } = supabase.storage
+                    .from('product-images')
+                    .getPublicUrl(filePath);
+
+                newImages.push(publicUrl);
+            }
+
+            const updatedGallery = [...galleryImages, ...newImages];
+            setGalleryImages(updatedGallery);
+
+            // Auto-set featured image if none selected
+            if (!imageUrl && updatedGallery.length > 0) {
+                setImageUrl(updatedGallery[0]);
+            }
+
         } catch (error) {
             console.error(error);
-            alert("Error uploading image");
+            alert("Error uploading images");
         } finally {
             setIsLoading(false);
+            if (fileInputRef.current) fileInputRef.current.value = "";
         }
     };
 
@@ -132,6 +149,7 @@ export default function ProductManager({
             subtitle,
             category_id: categoryId || null,
             image_url: imageUrl,
+            gallery_images: galleryImages,
             details,
             features,
             tags
@@ -218,16 +236,52 @@ export default function ProductManager({
                                 </Select>
                             </div>
                             <div className="w-1/2">
-                                <label className="block text-xs uppercase text-white/40 font-bold mb-2">Image</label>
+                                <label className="block text-xs uppercase text-white/40 font-bold mb-2">Images</label>
                                 <input
                                     type="file"
                                     accept="image/*"
+                                    multiple
                                     ref={fileInputRef}
                                     onChange={handleImageUpload}
-                                    className="text-xs text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20"
+                                    className="text-xs text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-white/10 file:text-white hover:file:bg-white/20 mb-2"
                                 />
-                                {imageUrl && (
-                                    <div className="mt-2 text-xs text-green-400 truncate">Uploaded ✓</div>
+                                {galleryImages.length > 0 && (
+                                    <div className="grid grid-cols-3 gap-2 mt-2">
+                                        {galleryImages.map((img, idx) => (
+                                            <div key={idx} className={`relative aspect-square rounded overflow-hidden border-2 group ${imageUrl === img ? 'border-blue-500' : 'border-transparent'}`}>
+                                                <img src={img} alt="" className="w-full h-full object-cover" />
+
+                                                {/* Actions Overlay */}
+                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1">
+                                                    {imageUrl !== img && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setImageUrl(img)}
+                                                            className="text-[10px] bg-blue-600 px-2 py-1 rounded text-white hover:bg-blue-500"
+                                                        >
+                                                            Set Featured
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newGallery = galleryImages.filter(url => url !== img);
+                                                            setGalleryImages(newGallery);
+                                                            if (imageUrl === img) setImageUrl(newGallery[0] || "");
+                                                        }}
+                                                        className="text-[10px] bg-red-600 px-2 py-1 rounded text-white hover:bg-red-500"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+
+                                                {/* Featured Badge */}
+                                                {imageUrl === img && (
+                                                    <div className="absolute top-1 right-1 w-3 h-3 bg-blue-500 rounded-full border border-white" title="Featured Image" />
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 )}
                             </div>
                         </div>

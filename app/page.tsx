@@ -3,6 +3,7 @@
 import Navbar from "@/components/Navbar";
 import ImageSequence from "@/components/ImageSequence";
 import EquipmentCards from "@/components/EquipmentCards";
+import YouTubeSection from "@/components/YouTubeSection";
 import Footer from "@/components/Footer";
 import { TextReveal } from "@/components/Section";
 import { useLanguage } from "@/context/LanguageContext";
@@ -51,13 +52,13 @@ export default function Home() {
             <div className="w-full max-w-7xl mx-auto">
               <TextReveal>
                 <div className="max-w-xl p-8 rounded-2xl bg-black/30 backdrop-blur-sm border border-white/5 -ml-8">
-                  <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-400">
+                  <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-400 whitespace-pre-line">
                     {t.accuracy.title}
                   </h2>
-                  <p className="text-lg text-white/70 mb-4 leading-relaxed">
+                  <p className="text-lg text-white/70 mb-4 leading-relaxed break-keep">
                     {t.accuracy.desc1}
                   </p>
-                  <p className="text-lg text-white/70 leading-relaxed">
+                  <p className="text-lg text-white/70 leading-relaxed break-keep">
                     {t.accuracy.desc2}
                   </p>
                 </div>
@@ -82,6 +83,9 @@ export default function Home() {
       {/* NEW SECTION: EQUIPMENT CARDS */}
       {/* This sits AFTER the sticky canvas container, creating a natural flow where the page 'scrolls away' from the 3D model */}
       <EquipmentCards />
+
+      {/* YOUTUBE VIDEO SECTION */}
+      <YouTubeSection />
 
       {/* CTA / CONTACT */}
       <section className="relative z-10 py-32 bg-[#050505] flex items-center justify-center">
