@@ -96,7 +96,7 @@ export default function Footer() {
                                 <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                                     <p className="font-semibold text-white mb-2">{t.footer.modals.careers.contact_title}</p>
                                     <p>{t.footer.modals.careers.contact_desc}</p>
-                                    <a href="mailto:careers@daeyeon.com" className="text-blue-400 hover:text-blue-300 block mt-1">careers@daeyeon.com</a>
+                                    <a href="mailto:support@daeyeoncorp.com" className="text-blue-400 hover:text-blue-300 block mt-1">careers@daeyeoncorp.com</a>
                                 </div>
                             </div>
                         }
