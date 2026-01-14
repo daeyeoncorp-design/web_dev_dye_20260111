@@ -429,15 +429,15 @@ export default function SupportPageClient({
                                         <div className="space-y-4">
                                             <div>
                                                 <p className="text-xs uppercase text-white/40 mb-1">{t.support_page.contact.email_label}</p>
-                                                <a href="mailto:support@daeyeon.com" className="text-blue-400 hover:text-blue-300">support@daeyeon.com</a>
+                                                <a href="mailto:support@daeyeoncorp.com" className="text-blue-400 hover:text-blue-300">support@daeyeoncorp.com</a>
                                             </div>
                                             <div>
                                                 <p className="text-xs uppercase text-white/40 mb-1">{t.support_page.contact.phone_label}</p>
-                                                <p className="text-white">+82 00-000-0000</p>
+                                                <p className="text-white">+82 031-526-9333</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs uppercase text-white/40 mb-1">Fax</p>
-                                                <p className="text-white">+82 00-000-0000</p>
+                                                <p className="text-white">+82 031-526-9334</p>
                                             </div>
                                         </div>
                                     </div>
